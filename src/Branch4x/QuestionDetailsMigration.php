@@ -6,9 +6,12 @@ use Drupal\quizz_migrate\Branch4x\QuestionDetails\ClozeDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\DdlinesDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\DetailsInterface;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\LongTextDetails;
+use Drupal\quizz_migrate\Branch4x\QuestionDetails\MatchingDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\ShortTextDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\TrueFalseDetails;
+use Drupal\quizz_question\Entity\Question;
 use Migration;
+use RuntimeException;
 
 class QuestionDetailMigration extends Migration {
 
@@ -20,7 +23,7 @@ class QuestionDetailMigration extends Migration {
 
   public function __construct($arguments = array()) {
     $this->bundle = $arguments['bundle'];
-    $handler = $this->getDetailsHelper();
+    $handler = $this->getDetailsHandler();
     $this->source = $handler->setupMigrateSource();
     $this->destination = $handler->setupMigrateDestination();
     $this->map = $handler->setupMigrateMap();
@@ -32,7 +35,7 @@ class QuestionDetailMigration extends Migration {
     return $this->machineName;
   }
 
-  protected function getDetailsHelper() {
+  protected function getDetailsHandler() {
     if (NULL === $this->details) {
       switch ($this->bundle) {
         case 'quiz_cloze':
@@ -41,18 +44,11 @@ class QuestionDetailMigration extends Migration {
         case 'quiz_ddlines':
           $this->details = new DdlinesDetails($this);
           break;
-        case 'quiz_fileupload':
-          break;
         case 'quiz_long_answer':
           $this->details = new LongTextDetails($this);
           break;
         case 'quiz_matching':
-          break;
-        case 'quiz_multichoice':
-          break;
-        case 'quiz_pool':
-          break;
-        case 'quiz_scale':
+          $this->details = new MatchingDetails($this);
           break;
         case 'quiz_truefalse':
           $this->details = new TrueFalseDetails($this);
@@ -66,8 +62,30 @@ class QuestionDetailMigration extends Migration {
   }
 
   protected function import() {
-    $this->getDetailsHelper()->setup();
+    $this->getDetailsHandler()->setup();
     parent::import();
+  }
+
+  /**
+   * @param Question $question
+   * @throws RuntimeException
+   */
+  public function prepare($question, $row) {
+    $map = array(
+        'qid' => 'SELECT destid1 FROM {migrate_map_quiz_question__' . $row->question_type . '} WHERE sourceid1 = :id',
+        'vid' => 'SELECT destid1 FROM {migrate_map_quiz_question_revision__' . $row->question_type . '} WHERE sourceid1 = :id',
+    );
+
+    foreach ($map as $k => $sql) {
+      if (!$question->{$k} = db_query($sql, array(':id' => $question->{$k}))->fetchColumn()) {
+        throw new RuntimeException($k . ' not found. Source: ' . var_export($row));
+      }
+    }
+  }
+
+  protected function postImport() {
+    parent::postImport();
+    $this->getDetailsHandler()->import();
   }
 
 }

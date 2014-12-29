@@ -18,6 +18,9 @@ abstract class BaseDetails implements DetailsInterface {
 
   public function setupMigrateSource() {
     $query = db_select($this->source_table_name, 'details');
+    $query->innerJoin('node_revision', 'r', 'details.vid = r.vid');
+    $query->innerJoin('node', 'n', 'details.nid = r.nid');
+    $query->addField('n', 'type', 'question_type');
     $query->fields('details', $this->source_columns);
     return new MigrateSourceSQL($query);
   }
@@ -39,7 +42,10 @@ abstract class BaseDetails implements DetailsInterface {
     return new MigrateSQLMap($this->migration->getMachineName(), $pk_source, $pk_dest);
   }
 
-  public function import() {
+  /**
+   * {@inhertidoc}
+   */
+  public function postImport() {
 
   }
 

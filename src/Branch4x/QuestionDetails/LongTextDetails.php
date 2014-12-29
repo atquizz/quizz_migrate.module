@@ -2,6 +2,9 @@
 
 namespace Drupal\quizz_migrate\Branch4x\QuestionDetails;
 
+/**
+ * @TODO: To be completed.
+ */
 class LongTextDetails extends BaseDetails {
 
   protected $source_table_name = 'quiz_long_answer_node_properties';

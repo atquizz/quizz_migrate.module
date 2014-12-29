@@ -8,7 +8,7 @@ class ShortTextDetails extends BaseDetails {
   protected $source_columns = array('nid', 'vid', 'maximum_score', 'text_entry_type', 'correct_answer_evaluation', 'correct_answer', 'feedback_correct', 'feedback_incorrect');
   protected $dest_table_name = 'quizz_short_question';
   protected $column_mapping = array(
-      'nid'                       => 'nid',
+      'nid'                       => 'qid',
       'vid'                       => 'vid',
       'maximum_score'             => 'maximum_score',
       'text_entry_type'           => 'text_entry_type',

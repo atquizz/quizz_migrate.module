@@ -29,7 +29,7 @@ interface DetailsInterface {
   public function setupMigrateFieldMapping();
 
   /**
-   * On importing.
+   * After importing.
    */
-  public function import();
+  public function postImport();
 }
