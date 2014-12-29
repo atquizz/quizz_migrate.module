@@ -42,6 +42,14 @@ function quizz_migrate_migrate_api() {
       ),
   );
 
+  $api['migrations'] += array(
+      'quiz_result' => array(
+          'class_name'   => 'Drupal\quizz_migrate\Branch4x\ResultMigration',
+          'group_name'   => 'quiz4x',
+          'dependencies' => array('quiz_relationship'),
+      ),
+  );
+
   return $api;
 }
 
@@ -53,6 +61,7 @@ function quizz_migrate_enable() {
   Migration::registerMigration('Drupal\quizz_migrate\Branch4x\QuizRevisionMigration', 'quiz_revision', array('group_name' => 'quiz4x'));
   Migration::registerMigration('Drupal\quizz_migrate\Branch4x\QuestionTypeMigration', 'quiz_question_type', array('group_name' => 'quiz4x'));
   Migration::registerMigration('Drupal\quizz_migrate\Branch4x\RelationshipMigration', 'quiz_relationship', array('group_name' => 'quiz4x'));
+  Migration::registerMigration('Drupal\quizz_migrate\Branch4x\ResultMigration', 'quiz_result', array('group_name' => 'quiz4x'));
   Migration::deregisterMigration('quiz_question');
 }
 

@@ -11,6 +11,7 @@ class BaseEntityDestination extends MigrateDestinationEntity {
   protected $base_table;
   protected $bundle;
   protected static $pk_name;
+  protected $disable_import_complete = FALSE;
 
   public function __construct($options = array()) {
     $this->bundle = isset($options['bundle']) ? $options['bundle'] : isset($this->bundle) ? $this->bundle : NULL;
@@ -35,9 +36,11 @@ class BaseEntityDestination extends MigrateDestinationEntity {
       $fields[$name] = isset($info['description']) ? $info['description'] : $name;
     }
 
-    $entity_type = str_replace(' ', '_', ucwords(str_replace('_', ' ', $this->entity_type)));
-    $fields += migrate_handler_invoke_all($entity_type, 'fields', $this->entity_type, $this->bundle, $migration);
-    $fields += migrate_handler_invoke_all('Entity', 'fields', $this->entity_type, $this->bundle, $migration);
+    if ($this->bundle) {
+      $entity_type = str_replace(' ', '_', ucwords(str_replace('_', ' ', $this->entity_type)));
+      $fields += migrate_handler_invoke_all($entity_type, 'fields', $this->entity_type, $this->bundle, $migration);
+      $fields += migrate_handler_invoke_all('Entity', 'fields', $this->entity_type, $this->bundle, $migration);
+    }
 
     return $fields;
   }
@@ -63,7 +66,11 @@ class BaseEntityDestination extends MigrateDestinationEntity {
   protected function doImport($entity, $row) {
     $this->prepare($entity, $row);
     $entity->save();
-    $this->complete($entity, $row);
+
+    if (!$this->disable_import_complete) {
+      $this->complete($entity, $row);
+    }
+
     return array($entity->{static::$pk_name});
   }
 
