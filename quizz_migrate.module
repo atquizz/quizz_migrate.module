@@ -6,9 +6,10 @@
 function quizz_migrate_migrate_api() {
   $api = array('api' => 2, 'migrations' => array());
 
-  $api['groups']['quiz4x']['title'] = 'Quiz 4x';
-  $api['groups']['quiz4x_question']['title'] = 'Quiz question 4x';
-  $api['groups']['quiz4x_question_revision']['title'] = 'Quiz question revision 4x';
+  $api['groups']['quiz4x']['title'] = 'Quiz [4x]';
+  $api['groups']['quiz4x_question']['title'] = 'Quiz question [4x]';
+  $api['groups']['quiz4x_question_revision']['title'] = 'Quiz question revision [4x]';
+  $api['groups']['quiz4x_question_details']['title'] = 'Quiz question details [4x]';
 
   $api['migrations'] += array(
       'quiz'          => array(
@@ -26,11 +27,6 @@ function quizz_migrate_migrate_api() {
       'quiz_question_type' => array(
           'class_name' => 'Drupal\quizz_migrate\Branch4x\QuestionTypeMigration',
           'group_name' => 'quiz4x',
-      ),
-      'quiz_question'      => array(
-          'class_name'   => 'Drupal\quizz_migrate\Branch4x\QuestionMigration',
-          'group_name'   => 'quiz4x_question',
-          'dependencies' => array('quiz_question_type'),
       ),
   );
 
@@ -67,15 +63,23 @@ function quizz_migrate_enable() {
 }
 
 function quizz_migrate_enable_question_type($node_type) {
-  if (quizz_question_get_handler_info($node_type)) {
-    Migration::registerMigration(
-      'Drupal\quizz_migrate\Branch4x\QuestionMigration', "quiz_question__{$node_type}", array('bundle' => $node_type, 'group_name' => 'quiz4x_question')
-    );
-
-    Migration::registerMigration(
-      'Drupal\quizz_migrate\Branch4x\QuestionRevisionMigration', "quiz_question_revision__{$node_type}", array('bundle' => $node_type, 'group_name' => 'quiz4x_question_revision')
-    );
+  if (!quizz_question_get_handler_info($node_type)) {
+    return;
   }
+
+  $base = array('bundle' => $node_type);
+
+  $qm_class = 'Drupal\quizz_migrate\Branch4x\QuestionMigration';
+  $qm_name = "quiz_question__{$node_type}";
+  Migration::registerMigration($qm_class, $qm_name, $base + array('group_name' => 'quiz4x_question'));
+
+  $qrm_class = 'Drupal\quizz_migrate\Branch4x\QuestionRevisionMigration';
+  $qrm_name = "quiz_question_revision__{$node_type}";
+  Migration::registerMigration($qrm_class, $qrm_name, $base + array('group_name' => 'quiz4x_question_revision'));
+
+  #$qhm_class = 'Drupal\quizz_migrate\Branch4x\QuestionDetailMigration';
+  #$qhm_name = "quiz_question_details__{$node_type}";
+  #Migration::registerMigration($qhm_class, $qhm_name, $base + array('group_name' => 'quiz4x_question_details'));
 }
 
 /**
