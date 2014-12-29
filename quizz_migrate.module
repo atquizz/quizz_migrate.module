@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\quizz_migrate\Branch4x\QuestionDetailMigration;
+
 /**
  * Implements hook_migrate_api().
  */
@@ -77,9 +79,19 @@ function quizz_migrate_enable_question_type($node_type) {
   $qrm_name = "quiz_question_revision__{$node_type}";
   Migration::registerMigration($qrm_class, $qrm_name, $base + array('group_name' => 'quiz4x_question_revision'));
 
-  #$qhm_class = 'Drupal\quizz_migrate\Branch4x\QuestionDetailMigration';
-  #$qhm_name = "quiz_question_details__{$node_type}";
-  #Migration::registerMigration($qhm_class, $qhm_name, $base + array('group_name' => 'quiz4x_question_details'));
+  try {
+    // Try, valid details handler found -- no exception.
+    $migration = new QuestionDetailMigration($base);
+
+    // Register it
+    $qhm_class = get_class($migration);
+    $qhm_name = "quiz_question_details__{$node_type}";
+    Migration::registerMigration($qhm_class, $qhm_name, $base + array('group_name' => 'quiz4x_question_details'));
+  }
+  catch (Exception $e) {
+    // Structure of some question type is quite complex, we have to have
+    // separated migration classes.
+  }
 }
 
 /**
