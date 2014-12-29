@@ -1,0 +1,9 @@
+name = Quizz migrate
+description = 
+package = Quiz Extra
+core = 7.x
+
+dependencies[] = migrate
+dependencies[] = xautoload
+dependencies[] = quizz
+dependencies[] = quizz_question
