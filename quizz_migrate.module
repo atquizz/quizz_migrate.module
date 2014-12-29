@@ -62,6 +62,7 @@ function quizz_migrate_enable() {
   Migration::registerMigration('Drupal\quizz_migrate\Branch4x\QuestionTypeMigration', 'quiz_question_type', array('group_name' => 'quiz4x'));
   Migration::registerMigration('Drupal\quizz_migrate\Branch4x\RelationshipMigration', 'quiz_relationship', array('group_name' => 'quiz4x'));
   Migration::registerMigration('Drupal\quizz_migrate\Branch4x\ResultMigration', 'quiz_result', array('group_name' => 'quiz4x'));
+  Migration::registerMigration('Drupal\quizz_migrate\Branch4x\AnswerMigration', 'quiz_answer', array('group_name' => 'quiz4x'));
   Migration::deregisterMigration('quiz_question');
 }
 
