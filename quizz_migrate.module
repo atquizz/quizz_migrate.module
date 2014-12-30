@@ -12,6 +12,7 @@ function quizz_migrate_migrate_api() {
   $api['groups']['quiz4x_question']['title'] = 'Quiz question [4x]';
   $api['groups']['quiz4x_question_revision']['title'] = 'Quiz question revision [4x]';
   $api['groups']['quiz4x_question_details']['title'] = 'Quiz question details [4x]';
+  $api['groups']['quiz4x_question_extra']['title'] = 'Quiz question extra [4x]';
 
   $api['migrations'] += array(
       'quiz'          => array(
@@ -50,6 +51,18 @@ function quizz_migrate_migrate_api() {
           'class_name'   => 'Drupal\quizz_migrate\Branch4x\AnswerMigration',
           'group_name'   => 'quiz4x',
           'dependencies' => array('quiz_result'),
+      ),
+  );
+
+  $api['migrations'] = array(
+      'quiz_question_extra_pool'          => array(
+          'class_name' => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Pool\QuestionReferenceMigration',
+          'group_name' => 'quiz4x_question_extra',
+      ),
+      'quiz_question_extra_pool_revision' => array(
+          'class_name'   => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Pool\QuestionReferenceRevisionMigration',
+          'group_name'   => 'quiz4x_question_extra',
+          'dependencies' => array('quiz_question_extra_pool'),
       ),
   );
 
