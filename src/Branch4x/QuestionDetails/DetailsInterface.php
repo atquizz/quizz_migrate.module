@@ -29,7 +29,12 @@ interface DetailsInterface {
   public function setupMigrateFieldMapping();
 
   /**
+   * On prepare entity before importing.
+   */
+  public function prepare($entity, $row);
+
+  /**
    * After importing.
    */
-  public function postImport();
+  public function complete($entity, $row);
 }

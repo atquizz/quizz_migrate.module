@@ -46,6 +46,11 @@ function quizz_migrate_migrate_api() {
           'group_name'   => 'quiz4x',
           'dependencies' => array('quiz_relationship'),
       ),
+      'quiz_answer' => array(
+          'class_name'   => 'Drupal\quizz_migrate\Branch4x\AnswerMigration',
+          'group_name'   => 'quiz4x',
+          'dependencies' => array('quiz_result'),
+      ),
   );
 
   return $api;
@@ -55,12 +60,6 @@ function quizz_migrate_migrate_api() {
  * Implements hook_enable().
  */
 function quizz_migrate_enable() {
-  Migration::registerMigration('Drupal\quizz_migrate\Branch4x\QuizMigration', 'quiz', array('group_name' => 'quiz4x'));
-  Migration::registerMigration('Drupal\quizz_migrate\Branch4x\QuizRevisionMigration', 'quiz_revision', array('group_name' => 'quiz4x'));
-  Migration::registerMigration('Drupal\quizz_migrate\Branch4x\QuestionTypeMigration', 'quiz_question_type', array('group_name' => 'quiz4x'));
-  Migration::registerMigration('Drupal\quizz_migrate\Branch4x\RelationshipMigration', 'quiz_relationship', array('group_name' => 'quiz4x'));
-  Migration::registerMigration('Drupal\quizz_migrate\Branch4x\ResultMigration', 'quiz_result', array('group_name' => 'quiz4x'));
-  Migration::registerMigration('Drupal\quizz_migrate\Branch4x\AnswerMigration', 'quiz_answer', array('group_name' => 'quiz4x'));
   Migration::deregisterMigration('quiz_question');
 }
 
@@ -79,18 +78,12 @@ function quizz_migrate_enable_question_type($node_type) {
   $qrm_name = "quiz_question_revision__{$node_type}";
   Migration::registerMigration($qrm_class, $qrm_name, $base + array('group_name' => 'quiz4x_question_revision'));
 
-  try {
-    // Try, valid details handler found -- no exception.
-    $migration = new QuestionDetailMigration($base);
-
-    // Register it
+  // Try, valid details handler found -- no exception.
+  $migration = new QuestionDetailMigration($base);
+  if ($migration->getDetailsHandler()) {
     $qhm_class = get_class($migration);
     $qhm_name = "quiz_question_details__{$node_type}";
     Migration::registerMigration($qhm_class, $qhm_name, $base + array('group_name' => 'quiz4x_question_details'));
-  }
-  catch (Exception $e) {
-    // Structure of some question type is quite complex, we have to have
-    // separated migration classes.
   }
 }
 

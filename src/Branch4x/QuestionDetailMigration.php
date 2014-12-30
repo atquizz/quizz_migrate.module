@@ -9,7 +9,6 @@ use Drupal\quizz_migrate\Branch4x\QuestionDetails\LongTextDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\MatchingDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\ShortTextDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\TrueFalseDetails;
-use Drupal\quizz_question\Entity\Question;
 use Migration;
 use RuntimeException;
 
@@ -23,6 +22,7 @@ class QuestionDetailMigration extends Migration {
 
   public function __construct($arguments = array()) {
     $this->bundle = $arguments['bundle'];
+    $this->machineName = "quiz_question_details__{$this->bundle}";
 
     if ($handler = $this->getDetailsHandler()) {
       $this->source = $handler->setupMigrateSource();
@@ -34,39 +34,11 @@ class QuestionDetailMigration extends Migration {
     parent::__construct($arguments);
   }
 
-  public function sourceCount($refresh = FALSE) {
-    if (NULL === $this->source) {
-      return t('N/A');
-    }
-    return parent::sourceCount($refresh);
-  }
-
-  public function processedCount() {
-    if (NULL === $this->map) {
-      return t('N/A');
-    }
-    return parent::processedCount();
-  }
-
-  public function importedCount() {
-    if (NULL === $this->map) {
-      return t('N/A');
-    }
-    return parent::importedCount();
-  }
-
-  public function messageCount() {
-    if (NULL === $this->map) {
-      return t('N/A');
-    }
-    return parent::messageCount();
-  }
-
   public function getMachineName() {
     return $this->machineName;
   }
 
-  protected function getDetailsHandler() {
+  public function getDetailsHandler() {
     if (NULL === $this->details_handler) {
       switch ($this->bundle) {
         case 'cloze':
@@ -96,30 +68,12 @@ class QuestionDetailMigration extends Migration {
     return $this->details_handler;
   }
 
-  /**
-   * @param Question $question
-   * @throws RuntimeException
-   */
-  public function prepare($question, $row) {
-    $map = array(
-        'qid' => 'SELECT destid1 FROM {migrate_map_quiz_question__' . $row->question_type . '} WHERE sourceid1 = :id',
-        'vid' => 'SELECT destid1 FROM {migrate_map_quiz_question_revision__' . $row->question_type . '} WHERE sourceid1 = :id',
-    );
-
-    foreach ($map as $k => $sql) {
-      if (!$question->{$k} = db_query($sql, array(':id' => $question->{$k}))->fetchColumn()) {
-        throw new RuntimeException($k . ' not found. Source: ' . var_export($row));
-      }
-    }
+  public function prepare($entity, $row) {
+    return $this->getDetailsHandler()->prepare($entity, $row);
   }
 
-  protected function rollback() {
-    parent::rollback();
-  }
-
-  protected function postImport() {
-    parent::postImport();
-    $this->getDetailsHandler()->postImport();
+  public function complete($entity, stdClass $row) {
+    return $this->getDetailsHandler()->complete($entity, $row);
   }
 
 }

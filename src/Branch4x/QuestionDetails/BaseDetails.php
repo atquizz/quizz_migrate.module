@@ -3,7 +3,7 @@
 namespace Drupal\quizz_migrate\Branch4x\QuestionDetails;
 
 use Drupal\quizz_migrate\Branch4x\QuestionDetailMigration;
-use MigrateDestinationTable;
+use Drupal\quizz_migrate\Destination\QuestionDetailsDestination;
 use MigrateSourceSQL;
 use MigrateSQLMap;
 
@@ -13,6 +13,17 @@ abstract class BaseDetails implements DetailsInterface {
 
   /** @var QuestionDetailMigration */
   protected $migration;
+
+  /** @var array[] */
+  protected $pk_source = array(
+      'nid' => array('type' => 'int', 'not null' => TRUE, 'alias' => 'details'),
+      'vid' => array('type' => 'int', 'not null' => TRUE, 'alias' => 'details')
+  );
+
+  /** @var array[] */
+  protected $pk_dest = array(
+      'vid' => array('type' => 'int', 'not null' => TRUE)
+  );
 
   public function __construct($bundle, QuestionDetailMigration $migration) {
     $this->bundle = $bundle;
@@ -30,7 +41,7 @@ abstract class BaseDetails implements DetailsInterface {
   }
 
   public function setupMigrateDestination() {
-    return new MigrateDestinationTable($this->dest_table_name);
+    return new QuestionDetailsDestination($this->dest_table_name);
   }
 
   public function setupMigrateFieldMapping() {
@@ -38,19 +49,31 @@ abstract class BaseDetails implements DetailsInterface {
     foreach ($this->column_mapping as $source_column => $destination_column) {
       $m->addFieldMapping($destination_column, $source_column);
     }
+    $m->addUnmigratedSources(array('question_type'));
   }
 
   public function setupMigrateMap() {
-    $pk_source = MigrateDestinationTable::getKeySchema($this->dest_table_name);
-    $pk_dest = MigrateDestinationTable::getKeySchema($this->source_table_name);
-    return new MigrateSQLMap($this->migration->getMachineName(), $pk_source, $pk_dest);
+    return new MigrateSQLMap($this->migration->getMachineName(), $this->pk_source, $this->pk_dest);
+  }
+
+  public function prepare($entity, $row) {
+    $map = array(
+        'qid' => 'SELECT destid1 FROM {migrate_map_quiz_question__' . $row->question_type . '} WHERE sourceid1 = :id',
+        'vid' => 'SELECT destid1 FROM {migrate_map_quiz_question_revision__' . $row->question_type . '} WHERE sourceid1 = :id',
+    );
+
+    foreach ($map as $k => $sql) {
+      if (!$entity->{$k} = db_query($sql, array(':id' => $entity->{$k}))->fetchColumn()) {
+        throw new RuntimeException($k . ' not found. Source: ' . var_export($row));
+      }
+    }
   }
 
   /**
    * {@inhertidoc}
    */
-  public function postImport() {
-
+  public function complete($entity, $row) {
+    
   }
 
 }
