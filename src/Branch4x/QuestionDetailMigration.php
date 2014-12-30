@@ -10,7 +10,7 @@ use Drupal\quizz_migrate\Branch4x\QuestionDetails\MatchingDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\ShortTextDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\TrueFalseDetails;
 use Migration;
-use RuntimeException;
+use stdClass;
 
 class QuestionDetailMigration extends Migration {
 

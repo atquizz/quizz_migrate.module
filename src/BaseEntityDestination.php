@@ -14,7 +14,7 @@ class BaseEntityDestination extends MigrateDestinationEntity {
   protected $disable_import_complete = FALSE;
 
   public function __construct($options = array()) {
-    $this->bundle = isset($options['bundle']) ? $options['bundle'] : isset($this->bundle) ? $this->bundle : NULL;
+    $this->bundle = isset($options['bundle']) ? $options['bundle'] : (isset($this->bundle) ? $this->bundle : NULL);
     parent::__construct($this->entity_type, $this->bundle, $options);
   }
 
