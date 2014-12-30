@@ -55,21 +55,25 @@ function quizz_migrate_migrate_api() {
   );
 
   $api['migrations'] += array(
-      'quiz_question_extra_pool'          => array(
+      'quiz_question_extra_pool'                 => array(
           'class_name' => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Pool\QuestionReferenceMigration',
           'group_name' => 'quiz4x_question_extra',
       ),
-      'quiz_question_extra_pool_revision' => array(
+      'quiz_question_extra_pool_revision'        => array(
           'class_name'   => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Pool\QuestionReferenceRevisionMigration',
           'group_name'   => 'quiz4x_question_extra',
           'dependencies' => array('quiz_question_extra_pool'),
       ),
-      'quiz_question_extra_matching'      => array(
+      'quiz_question_extra_matching'             => array(
           'class_name' => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Matching\MatchingQuestionExtraMigration',
           'group_name' => 'quiz4x_question_extra',
       ),
-      'quiz_question_extra_multichoice'   => array(
+      'quiz_question_extra_multichoice'          => array(
           'class_name' => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Multichoice\MultichoiceQuestionExtraMigration',
+          'group_name' => 'quiz4x_question_extra',
+      ),
+      'quiz_question_extra_multichoice_settings' => array(
+          'class_name' => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Multichoice\MultichoiceUserSettingsMigration',
           'group_name' => 'quiz4x_question_extra',
       ),
   );
