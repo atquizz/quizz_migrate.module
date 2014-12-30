@@ -54,7 +54,7 @@ function quizz_migrate_migrate_api() {
       ),
   );
 
-  $api['migrations'] = array(
+  $api['migrations'] += array(
       'quiz_question_extra_pool'          => array(
           'class_name' => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Pool\QuestionReferenceMigration',
           'group_name' => 'quiz4x_question_extra',
@@ -64,6 +64,11 @@ function quizz_migrate_migrate_api() {
           'group_name'   => 'quiz4x_question_extra',
           'dependencies' => array('quiz_question_extra_pool'),
       ),
+      'quiz_question_extra_matching'      => array(
+          'class_name' => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Matching\MatchingQuestionExtraMigration',
+          'group_name' => 'quiz4x_question_extra',
+      )
+    ,
   );
 
   return $api;
