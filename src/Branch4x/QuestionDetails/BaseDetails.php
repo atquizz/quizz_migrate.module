@@ -9,19 +9,23 @@ use MigrateSQLMap;
 
 abstract class BaseDetails implements DetailsInterface {
 
+  protected $bundle;
+
   /** @var QuestionDetailMigration */
   protected $migration;
 
-  public function __construct(QuestionDetailMigration $migration) {
+  public function __construct($bundle, QuestionDetailMigration $migration) {
+    $this->bundle = $bundle;
     $this->migration = $migration;
   }
 
   public function setupMigrateSource() {
     $query = db_select($this->source_table_name, 'details');
     $query->innerJoin('node_revision', 'r', 'details.vid = r.vid');
-    $query->innerJoin('node', 'n', 'details.nid = r.nid');
+    $query->innerJoin('node', 'n', 'r.nid = n.nid');
     $query->addField('n', 'type', 'question_type');
     $query->fields('details', $this->source_columns);
+    $query->condition('n.type', $this->bundle);
     return new MigrateSourceSQL($query);
   }
 

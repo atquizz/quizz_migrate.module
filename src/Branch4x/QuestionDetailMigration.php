@@ -19,16 +19,47 @@ class QuestionDetailMigration extends Migration {
   protected $bundle;
 
   /** @var DetailsInterface */
-  protected $details;
+  private $details_handler;
 
   public function __construct($arguments = array()) {
     $this->bundle = $arguments['bundle'];
-    $handler = $this->getDetailsHandler();
-    $this->source = $handler->setupMigrateSource();
-    $this->destination = $handler->setupMigrateDestination();
-    $this->map = $handler->setupMigrateMap();
-    $handler->setupMigrateFieldMapping();
+
+    if ($handler = $this->getDetailsHandler()) {
+      $this->source = $handler->setupMigrateSource();
+      $this->destination = $handler->setupMigrateDestination();
+      $this->map = $handler->setupMigrateMap();
+      $handler->setupMigrateFieldMapping();
+    }
+
     parent::__construct($arguments);
+  }
+
+  public function sourceCount($refresh = FALSE) {
+    if (NULL === $this->source) {
+      return t('N/A');
+    }
+    return parent::sourceCount($refresh);
+  }
+
+  public function processedCount() {
+    if (NULL === $this->map) {
+      return t('N/A');
+    }
+    return parent::processedCount();
+  }
+
+  public function importedCount() {
+    if (NULL === $this->map) {
+      return t('N/A');
+    }
+    return parent::importedCount();
+  }
+
+  public function messageCount() {
+    if (NULL === $this->map) {
+      return t('N/A');
+    }
+    return parent::messageCount();
   }
 
   public function getMachineName() {
@@ -36,34 +67,33 @@ class QuestionDetailMigration extends Migration {
   }
 
   protected function getDetailsHandler() {
-    if (NULL === $this->details) {
+    if (NULL === $this->details_handler) {
       switch ($this->bundle) {
-        case 'quiz_cloze':
-          $this->details = new ClozeDetails($this);
+        case 'cloze':
+          $this->details_handler = new ClozeDetails($this->bundle, $this);
           break;
         case 'quiz_ddlines':
-          $this->details = new DdlinesDetails($this);
+          $this->details_handler = new DdlinesDetails($this->bundle, $this);
           break;
-        case 'quiz_long_answer':
-          $this->details = new LongTextDetails($this);
+        case 'long_answer':
+          $this->details_handler = new LongTextDetails($this->bundle, $this);
           break;
-        case 'quiz_matching':
-          $this->details = new MatchingDetails($this);
+        case 'matching':
+          $this->details_handler = new MatchingDetails($this->bundle, $this);
           break;
-        case 'quiz_truefalse':
-          $this->details = new TrueFalseDetails($this);
+        case 'truefalse':
+          $this->details_handler = new TrueFalseDetails($this->bundle, $this);
           break;
-        case 'quiz_short_answer':
-          $this->details = new ShortTextDetails($this);
+        case 'short_answer':
+          $this->details_handler = new ShortTextDetails($this->bundle, $this);
+          break;
+        case 'multichoice':
+        case 'pool':
+        case 'quiz_directions':
           break;
       }
     }
-    return $this->details;
-  }
-
-  protected function import() {
-    $this->getDetailsHandler()->setup();
-    parent::import();
+    return $this->details_handler;
   }
 
   /**
@@ -83,9 +113,13 @@ class QuestionDetailMigration extends Migration {
     }
   }
 
+  protected function rollback() {
+    parent::rollback();
+  }
+
   protected function postImport() {
     parent::postImport();
-    $this->getDetailsHandler()->import();
+    $this->getDetailsHandler()->postImport();
   }
 
 }
