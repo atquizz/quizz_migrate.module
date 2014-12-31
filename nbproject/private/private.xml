@@ -3,10 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/andy/git/modules/quizz_migrate/src/Destination/QuestionRevisionDestination.php</file>
-            <file>file:/Users/andy/git/modules/quizz_migrate/src/Destination/QuestionDestination.php</file>
-            <file>file:/Users/andy/git/modules/quizz_migrate/README.md</file>
-            <file>file:/Users/andy/git/modules/quizz_migrate/src/Branch4x/QuestionRevisionMigration.php</file>
+            <file>file:/Users/andy/git/modules/quizz_migrate/src/Branch4x/QuestionDetailsMigration.php</file>
+            <file>file:/Users/andy/git/modules/quizz_migrate/src/Branch4x/AnswerDetailMigration.php</file>
         </group>
     </open-files>
 </project-private>
