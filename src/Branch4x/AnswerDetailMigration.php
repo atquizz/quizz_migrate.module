@@ -46,31 +46,32 @@ class AnswerDetailMigration extends Migration {
         case 'cloze':
           $this->details_handler = new ClozeDetails($this->bundle, $this);
           break;
-        case 'quiz_ddlines':
-          $this->details_handler = new DdlinesDetails($this->bundle, $this);
-          break;
-        case 'long_answer':
-          $this->details_handler = new LongTextDetails($this->bundle, $this);
-          break;
-        case 'matching':
-          $this->details_handler = new MatchingDetails($this->bundle, $this);
-          break;
-        case 'truefalse':
-          $this->details_handler = new TrueFalseDetails($this->bundle, $this);
-          break;
-        case 'short_answer':
-          $this->details_handler = new ShortTextDetails($this->bundle, $this);
-          break;
-        case 'multichoice':
-          $this->details_handler = new MultichoiceDetails($this->bundle, $this);
-          break;
-        case 'scale':
-          $this->details_handler = new ScaleDetails($this->bundle, $this);
-          $this->dependencies[] = 'quiz_scale_collection';
-          $this->dependencies[] = 'quiz_scale_collection_item';
-          break;
+//        case 'quiz_ddlines':
+//          $this->details_handler = new DdlinesDetails($this->bundle, $this);
+//          break;
+//        case 'long_answer':
+//          $this->details_handler = new LongTextDetails($this->bundle, $this);
+//          break;
+//        case 'matching':
+//          $this->details_handler = new MatchingDetails($this->bundle, $this);
+//          break;
+//        case 'truefalse':
+//          $this->details_handler = new TrueFalseDetails($this->bundle, $this);
+//          break;
+//        case 'short_answer':
+//          $this->details_handler = new ShortTextDetails($this->bundle, $this);
+//          break;
+//        case 'multichoice':
+//          $this->details_handler = new MultichoiceDetails($this->bundle, $this);
+//          break;
+//        case 'scale':
+//          $this->details_handler = new ScaleDetails($this->bundle, $this);
+//          $this->dependencies[] = 'quiz_scale_collection';
+//          $this->dependencies[] = 'quiz_scale_collection_item';
+//          break;
         case 'pool':
         case 'quiz_directions':
+        default:
           break;
       }
     }

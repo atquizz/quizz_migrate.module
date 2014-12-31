@@ -9,7 +9,7 @@ class AnswerDetailsDestination extends MigrateDestinationTable {
 
   public function import(stdClass $entity, stdClass $row) {
     parent::import($entity, $row);
-    return array($entity->qid);
+    return array($entity->answer_id);
   }
 
 }

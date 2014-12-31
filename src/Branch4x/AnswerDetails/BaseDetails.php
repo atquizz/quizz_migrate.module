@@ -31,7 +31,8 @@ abstract class BaseDetails implements DetailsInterface {
 
   /** @var array[] */
   protected $pk_source = array(
-      'answer_id' => array('type' => 'int', 'not null' => TRUE, 'alias' => 'details'),
+      'result_id'    => array('type' => 'int', 'not null' => TRUE, 'alias' => 'details'),
+      'question_vid' => array('type' => 'int', 'not null' => TRUE, 'alias' => 'details')
   );
 
   /** @var array[] */
@@ -46,11 +47,18 @@ abstract class BaseDetails implements DetailsInterface {
 
   public function setupMigrateSource() {
     $query = db_select($this->source_table_name, 'details');
-    $query->innerJoin('node_revision', 'r', 'details.vid = r.vid');
+
+    $query->innerJoin('quiz_node_results_answers', 'answer', 'details.result_id = answer.result_id AND details.question_vid = answer.question_vid');
+    $query->innerJoin('quiz_node_results', 'result', 'answer.result_id = result.result_id');
+    $query->innerJoin('node_revision', 'r', 'details.question_vid = r.vid');
     $query->innerJoin('node', 'n', 'r.nid = n.nid');
-    $query->addField('n', 'type', 'question_type');
-    $query->fields('details', $this->source_columns);
     $query->condition('n.type', $this->bundle);
+
+    $query->fields('details', $this->source_columns);
+    $query->fields('answer', array('result_id', 'question_nid', 'question_vid'));
+    $query->addExpression(0, 'answer_id');
+    $query->addField('n', 'type', 'question_type');
+
     return new MigrateSourceSQL($query);
   }
 
@@ -63,6 +71,7 @@ abstract class BaseDetails implements DetailsInterface {
     foreach ($this->column_mapping as $source_column => $destination_column) {
       $m->addFieldMapping($destination_column, $source_column);
     }
+    $m->addFieldMapping('answer_id', 'answer_id');
     $m->addUnmigratedSources(array('question_type'));
   }
 
@@ -71,21 +80,15 @@ abstract class BaseDetails implements DetailsInterface {
   }
 
   public function prepare($entity, $row) {
-    $map = array(
-        'result_id'    => 'SELECT destid1 FROM {migrate_map_quiz_result} WHERE sourceid1 = :id',
-        'answer_id'    => 'SELECT destid1 FROM {migrate_map_quiz_answer} WHERE sourceid1 = :id',
-        'qid'          => 'SELECT destid1 FROM {migrate_map_quiz_question__' . $row->question_type . '} WHERE sourceid1 = :id',
-        'question_qid' => 'SELECT destid1 FROM {migrate_map_quiz_question__' . $row->question_type . '} WHERE sourceid1 = :id',
-        'vid'          => 'SELECT destid1 FROM {migrate_map_quiz_question_revision__' . $row->question_type . '} WHERE sourceid1 = :id',
-        'question_vid' => 'SELECT destid1 FROM {migrate_map_quiz_question_revision__' . $row->question_type . '} WHERE sourceid1 = :id',
-    );
+    $result_id = db_query('SELECT destid1 FROM {migrate_map_quiz_result} WHERE sourceid1 = :id', array(':id' => $row->result_id))->fetchColumn();
+    $question_vid = db_query('SELECT destid1 FROM {migrate_map_quiz_question_revision__' . $row->question_type . '} WHERE sourceid1 = :id', array(':id' => $row->question_vid))->fetchColumn();
+    $entity->answer_id = db_query('SELECT id FROM {quiz_answer_entity} WHERE result_id = :result_id AND question_vid = :question_vid', array(
+        ':result_id'    => $result_id,
+        ':question_vid' => $question_vid,
+      ))->fetchColumn();
 
-    foreach ($map as $k => $sql) {
-      if (isset($entity->{$k})) {
-        if (!$entity->{$k} = db_query($sql, array(':id' => $entity->{$k}))->fetchColumn()) {
-          throw new RuntimeException($k . ' not found. Source: ' . var_export($row));
-        }
-      }
+    if (!$entity->answer_id) {
+      throw new RuntimeException('Can not find answer_id. Source: ' . var_export($row));
     }
   }
 
