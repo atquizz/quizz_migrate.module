@@ -8,6 +8,7 @@ use Drupal\quizz_migrate\Branch4x\QuestionDetails\DetailsInterface;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\LongTextDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\MatchingDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\MultichoiceDetails;
+use Drupal\quizz_migrate\Branch4x\QuestionDetails\ScaleDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\ShortTextDetails;
 use Drupal\quizz_migrate\Branch4x\QuestionDetails\TrueFalseDetails;
 use Migration;
@@ -62,6 +63,11 @@ class QuestionDetailMigration extends Migration {
           break;
         case 'multichoice':
           $this->details_handler = new MultichoiceDetails($this->bundle, $this);
+          break;
+        case 'scale':
+          $this->details_handler = new ScaleDetails($this->bundle, $this);
+          $this->dependencies[] = 'quiz_scale_collection';
+          $this->dependencies[] = 'quiz_scale_collection_item';
           break;
         case 'pool':
         case 'quiz_directions':

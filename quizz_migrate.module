@@ -15,11 +15,11 @@ function quizz_migrate_migrate_api() {
   $api['groups']['quiz4x_question_extra']['title'] = 'Quiz question extra [4x]';
 
   $api['migrations'] += array(
-      'quiz'          => array(
+      'quiz'                       => array(
           'class_name' => 'Drupal\quizz_migrate\Branch4x\QuizMigration',
           'group_name' => 'quiz4x',
       ),
-      'quiz_revision' => array(
+      'quiz_revision'              => array(
           'class_name'   => 'Drupal\quizz_migrate\Branch4x\QuizRevisionMigration',
           'group_name'   => 'quiz4x',
           'dependencies' => array('quiz'),
