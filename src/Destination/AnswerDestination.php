@@ -7,7 +7,7 @@ use Drupal\quizz_migrate\BaseEntityDestination;
 class AnswerDestination extends BaseEntityDestination {
 
   protected $entity_type = 'quiz_result_answer';
-  protected $base_table = 'quiz_results_answers';
+  protected $base_table = 'quiz_answer_entity';
   protected static $pk_name = 'result_answer_id';
   protected $disable_import_complete = TRUE;
 
