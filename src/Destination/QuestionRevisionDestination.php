@@ -23,15 +23,16 @@ class QuestionRevisionDestination extends QuestionDestination {
   }
 
   /**
-   * @param Question $entity
+   * @param Question $question
    * @param stdClass $row
    */
-  public function prepare($entity, stdClass $row) {
-    $table = "migrate_map_quiz_question__{$entity->type}";
+  public function prepare($question, stdClass $row) {
+    $table = "migrate_map_quiz_question__{$question->type}";
     $sql = 'SELECT destid1 FROM {' . $table . '} WHERE sourceid1 = :nid';
-    $entity->qid = db_query($sql, array(':nid' => $row->nid))->fetchColumn();
-    $entity->is_new = FALSE;
-    $entity->is_new_revision = TRUE;
+    $question->qid = db_query($sql, array(':nid' => $row->nid))->fetchColumn();
+    $question->is_new = FALSE;
+    $question->is_new_revision = TRUE;
+    parent::prepare($question, $row);
   }
 
 }
