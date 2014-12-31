@@ -8,7 +8,7 @@ class AnswerDestination extends BaseEntityDestination {
 
   protected $entity_type = 'quiz_result_answer';
   protected $base_table = 'quiz_answer_entity';
-  protected static $pk_name = 'result_answer_id';
+  protected static $pk_name = 'id';
   protected $disable_import_complete = TRUE;
 
 }
