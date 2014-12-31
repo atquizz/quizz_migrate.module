@@ -24,6 +24,15 @@ function quizz_migrate_migrate_api() {
           'group_name'   => 'quiz4x',
           'dependencies' => array('quiz'),
       ),
+      'quiz_scale_collection'      => array(
+          'class_name' => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Scale\ScaleCollectionMigration',
+          'group_name' => 'quiz4x',
+      ),
+      'quiz_scale_collection_item' => array(
+          'class_name'   => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Scale\ScaleCollectionItemMigration',
+          'group_name'   => 'quiz4x',
+          'dependencies' => array('quiz_scale_collection'),
+      ),
   );
 
   $api['migrations'] += array(
