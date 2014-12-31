@@ -72,7 +72,7 @@ abstract class BaseDetails implements DetailsInterface {
       $m->addFieldMapping($destination_column, $source_column);
     }
     $m->addFieldMapping('answer_id', 'answer_id');
-    $m->addUnmigratedSources(array('question_type'));
+    $m->addUnmigratedSources(array('question_type', 'question_nid', 'question_vid'));
   }
 
   public function setupMigrateMap() {

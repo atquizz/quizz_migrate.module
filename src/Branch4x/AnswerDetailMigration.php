@@ -55,9 +55,9 @@ class AnswerDetailMigration extends Migration {
 //        case 'matching':
 //          $this->details_handler = new MatchingDetails($this->bundle, $this);
 //          break;
-//        case 'truefalse':
-//          $this->details_handler = new TrueFalseDetails($this->bundle, $this);
-//          break;
+        case 'truefalse':
+          $this->details_handler = new TrueFalseDetails($this->bundle, $this);
+          break;
 //        case 'short_answer':
 //          $this->details_handler = new ShortTextDetails($this->bundle, $this);
 //          break;
