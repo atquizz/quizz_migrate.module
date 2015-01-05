@@ -46,9 +46,9 @@ class AnswerDetailMigration extends Migration {
         case 'cloze':
           $this->details_handler = new ClozeDetails($this->bundle, $this);
           break;
-//        case 'quiz_ddlines':
-//          $this->details_handler = new DdlinesDetails($this->bundle, $this);
-//          break;
+        case 'quiz_ddlines':
+          $this->details_handler = new DdlinesDetails($this->bundle, $this);
+          break;
         case 'long_answer':
           $this->details_handler = new LongTextDetails($this->bundle, $this);
           break;
