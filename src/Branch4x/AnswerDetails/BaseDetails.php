@@ -8,6 +8,7 @@ use Drupal\quizz_migrate\Destination\AnswerDetailsDestination;
 use MigrateSourceSQL;
 use MigrateSQLMap;
 use RuntimeException;
+use SelectQuery;
 
 abstract class BaseDetails implements DetailsInterface {
 
@@ -19,6 +20,8 @@ abstract class BaseDetails implements DetailsInterface {
 
   /** @var string */
   protected $source_table_name;
+
+  /** @var string[] */
   protected $source_base_columns = array('result_id', 'question_nid', 'question_vid');
 
   /** @var string[] */
@@ -60,6 +63,15 @@ abstract class BaseDetails implements DetailsInterface {
     $query->addExpression(0, 'answer_id');
     $query->addField('n', 'type', 'question_type');
 
+    return $this->doSetupMigrationSource($query);
+  }
+
+  /**
+   * Sub classes can override this one.
+   * @param SelectQuery $query
+   * @return MigrateSourceSQL
+   */
+  protected function doSetupMigrationSource(SelectQuery $query) {
     return new MigrateSourceSQL($query);
   }
 
