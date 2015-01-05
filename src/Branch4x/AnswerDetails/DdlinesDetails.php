@@ -5,7 +5,7 @@ namespace Drupal\quizz_migrate\Branch4x\AnswerDetails;
 class DdlinesDetails extends BaseDetails {
 
   protected $source_table_name = 'quiz_ddlines_user_answer_multi';
-  protected $source_columns = array('user_answer_id', 'hotspot_id', 'label_id');
+  protected $source_columns = array('hotspot_id', 'label_id');
   protected $dest_table_name = 'quiz_ddlines_answer';
   protected $column_mapping = array(
       'hotspot_id' => 'hotspot_id',

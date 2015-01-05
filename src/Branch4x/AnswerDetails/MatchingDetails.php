@@ -6,6 +6,10 @@ class MatchingDetails extends BaseDetails {
 
   protected $source_table_name = 'quiz_matching_user_answers';
   protected $source_columns = array('match_id', 'score', 'answer');
+  protected $pk_source = array(
+      'result_id' => array('type' => 'int', 'not null' => TRUE, 'alias' => 'details'),
+      'match_id'  => array('type' => 'int', 'not null' => TRUE, 'alias' => 'details'),
+  );
   protected $dest_table_name = 'quizz_matching_answer';
   protected $column_mapping = array(
       'match_id' => 'match_id',
