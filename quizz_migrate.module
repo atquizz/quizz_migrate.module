@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\quizz_migrate\Branch4x\AnswerDetailMigration;
 use Drupal\quizz_migrate\Branch4x\QuestionDetailMigration;
 
 /**
@@ -13,6 +14,7 @@ function quizz_migrate_migrate_api() {
   $api['groups']['quiz4x_question_revision']['title'] = 'Quiz question revision [4x]';
   $api['groups']['quiz4x_question_details']['title'] = 'Quiz question details [4x]';
   $api['groups']['quiz4x_question_extra']['title'] = 'Quiz question extra [4x]';
+  $api['groups']['quiz4x_answer_details']['title'] = 'Quiz answer details [4x]';
 
   $api['migrations'] += array(
       'quiz'                       => array(
@@ -113,11 +115,18 @@ function quizz_migrate_enable_question_type($node_type) {
   Migration::registerMigration($qrm_class, $qrm_name, $base + array('group_name' => 'quiz4x_question_revision'));
 
   // Try, valid details handler found -- no exception.
-  $migration = new QuestionDetailMigration($base);
-  if ($migration->getDetailsHandler()) {
-    $qhm_class = get_class($migration);
+  $mi_question = new QuestionDetailMigration($base);
+  if ($mi_question->getDetailsHandler()) {
+    $qhm_class = get_class($mi_question);
     $qhm_name = "quiz_question_details__{$node_type}";
     Migration::registerMigration($qhm_class, $qhm_name, $base + array('group_name' => 'quiz4x_question_details'));
+  }
+
+  $mi_answer = new AnswerDetailMigration($base);
+  if ($mi_answer->getDetailsHandler()) {
+    $ahm_class = get_class($mi_answer);
+    $ahm_name = "quiz_answer_details__{$node_type}";
+    Migration::registerMigration($ahm_class, $ahm_name, $base + array('group_name' => 'quiz4x_answer_details'));
   }
 }
 

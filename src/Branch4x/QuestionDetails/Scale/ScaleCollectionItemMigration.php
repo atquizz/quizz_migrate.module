@@ -40,15 +40,15 @@ class ScaleCollectionItemMigration extends Migration {
   }
 
   protected function setupFieldMapping() {
-    $this->addFieldMapping('answer_collection_id', 'answer_collection_id');
+    $this->addFieldMapping('collection_id', 'answer_collection_id');
     $this->addFieldMapping('answer', 'answer');
   }
 
   public function prepare($item, $row) {
     $sql = 'SELECT destid1 FROM {migrate_map_quiz_scale_collection} WHERE sourceid1 = :id';
-    $item->answer_collection_id = db_query($sql, array(':id' => $row->answer_collection_id))->fetchColumn();
-    if ($item->answer_collection_id) {
-      throw new RuntimeException('Can not find item.answer_collection_id');
+    $item->collection_id = db_query($sql, array(':id' => $row->answer_collection_id))->fetchColumn();
+    if ($item->collection_id) {
+      throw new RuntimeException('Can not find item.collection_id');
     }
   }
 
