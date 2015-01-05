@@ -6,7 +6,7 @@ class ScaleDetails extends BaseDetails {
 
   protected $source_table_name = 'quiz_scale_user_answers';
   protected $source_columns = array('answer_id');
-  protected $dest_table_name = 'quiz_scale_answer';
+  protected $dest_table_name = 'quizz_scale_answer';
   protected $column_mapping = array(
       'answer_id' => 'collection_item_id',
   );

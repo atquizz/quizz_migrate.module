@@ -92,13 +92,6 @@ function quizz_migrate_migrate_api() {
   return $api;
 }
 
-/**
- * Implements hook_enable().
- */
-function quizz_migrate_enable() {
-  Migration::deregisterMigration('quiz_question');
-}
-
 function quizz_migrate_enable_question_type($node_type) {
   if (!quizz_question_get_handler_info($node_type)) {
     return;
