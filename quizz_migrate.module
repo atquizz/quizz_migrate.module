@@ -15,25 +15,17 @@ function quizz_migrate_migrate_api() {
   $api['groups']['quiz4x_question_details']['title'] = 'Quiz question details [4x]';
   $api['groups']['quiz4x_question_extra']['title'] = 'Quiz question extra [4x]';
   $api['groups']['quiz4x_answer_details']['title'] = 'Quiz answer details [4x]';
+  $api['groups']['quiz4x_settings']['title'] = 'Quiz settings [4x]';
 
   $api['migrations'] += array(
-      'quiz'                       => array(
+      'quiz'          => array(
           'class_name' => 'Drupal\quizz_migrate\Branch4x\QuizMigration',
           'group_name' => 'quiz4x',
       ),
-      'quiz_revision'              => array(
+      'quiz_revision' => array(
           'class_name'   => 'Drupal\quizz_migrate\Branch4x\QuizRevisionMigration',
           'group_name'   => 'quiz4x',
           'dependencies' => array('quiz'),
-      ),
-      'quiz_scale_collection'      => array(
-          'class_name' => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Scale\ScaleCollectionMigration',
-          'group_name' => 'quiz4x',
-      ),
-      'quiz_scale_collection_item' => array(
-          'class_name'   => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Scale\ScaleCollectionItemMigration',
-          'group_name'   => 'quiz4x',
-          'dependencies' => array('quiz_scale_collection'),
       ),
   );
 
@@ -89,6 +81,25 @@ function quizz_migrate_migrate_api() {
       ),
   );
 
+  $api['migrations'] += array(
+      'quiz_scale_collection'      => array(
+          'class_name' => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Scale\ScaleCollectionMigration',
+          'group_name' => 'quiz4x',
+      ),
+      'quiz_scale_collection_item' => array(
+          'class_name'   => 'Drupal\quizz_migrate\Branch4x\QuestionDetails\Scale\ScaleCollectionItemMigration',
+          'group_name'   => 'quiz4x',
+          'dependencies' => array('quiz_scale_collection'),
+      ),
+  );
+
+  $api['migrations'] += array(
+      'quiz_settings' => array(
+          'class_name' => 'Drupal\quizz_migrate\Branch4x\QuizSettingsMigration',
+          'group_name' => 'quiz4x_settings',
+      ),
+  );
+
   return $api;
 }
 
@@ -121,6 +132,11 @@ function quizz_migrate_enable_question_type($node_type) {
     $ahm_name = "quiz_answer_details__{$node_type}";
     Migration::registerMigration($ahm_class, $ahm_name, $base + array('group_name' => 'quiz4x_answer_details'));
   }
+
+  // Question type migration
+  $qsm_class = 'Drupal\quizz_migrate\Branch4x\QuestionSettingsMigration';
+  $qsm_name = "quiz_question_settings__{$node_type}";
+  Migration::registerMigration($qsm_class, $qsm_name, $base + array('group_name' => 'quiz4x_settings'));
 }
 
 /**
