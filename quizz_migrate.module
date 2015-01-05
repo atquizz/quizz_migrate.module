@@ -92,6 +92,13 @@ function quizz_migrate_migrate_api() {
       ),
   );
 
+  $api['migrations'] += array(
+      'quiz_settings' => array(
+          'class_name' => 'Drupal\quizz_migrate\Branch4x\QuizSettingsMigration',
+          'group_name' => 'quiz4x',
+      ),
+  );
+
   return $api;
 }
 

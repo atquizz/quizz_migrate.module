@@ -6,12 +6,11 @@ use MigrateSource;
 
 class QuizSettingsSource extends MigrateSource {
 
-  private $quiz_type;
+  private $quiz_type = 'quiz';
   private $item_number = 0;
   private $variables = array();
 
   public function __construct($options = array()) {
-    $this->quiz_type = $options['quiz_type'];
     parent::__construct($options);
 
     $this->variables = array(
@@ -53,7 +52,11 @@ class QuizSettingsSource extends MigrateSource {
     }
 
     $var = $this->variables[$this->item_number++];
-    return (object) array('name' => $var[0], 'value' => $var[1]);
+    return (object) array(
+          'type'  => $this->quiz_type,
+          'name'  => $var[0],
+          'value' => $var[1]
+    );
   }
 
 }
