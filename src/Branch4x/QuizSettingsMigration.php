@@ -18,7 +18,7 @@ class QuizSettingsMigration extends Migration {
     $source_key = $destination_key = QuizSettingsDestination::getKeySchema();
 
     $this->map = new MigrateSQLMap('quiz_settings', $source_key, $destination_key);
-    $this->addSimpleMappings(array('type', 'name', 'value'));
+    $this->addSimpleMappings(array('bundle', 'name', 'value'));
   }
 
 }

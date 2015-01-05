@@ -13,7 +13,10 @@ class QuestionSettingsSource extends MigrateSource {
   public function __construct($options = array()) {
     $this->question_type = $options['question_type'];
     parent::__construct($options);
+    $this->setupVariables();
+  }
 
+  private function setupVariables() {
     $question_type = quizz_question_type_load($this->question_type);
     if (($handler = $question_type->getHandler()) && method_exists($handler, 'questionTypeConfigForm')) {
       $handler_form = $handler->questionTypeConfigForm($question_type);
@@ -21,8 +24,6 @@ class QuestionSettingsSource extends MigrateSource {
     elseif (($fn = $question_type->handler . '_quiz_question_config') && function_exists($fn)) {
       $handler_form = $fn($question_type);
     }
-
-    $this->variables = array();
 
     if ($handler_form) {
       foreach (element_children($handler_form) as $name) {
@@ -33,7 +34,7 @@ class QuestionSettingsSource extends MigrateSource {
         $type = $handler_form[$name]['#type'];
         $types = array('textfield', 'textarea', 'select', 'radios', 'checkbox', 'checkboxes');
         if (in_array($type, $types)) {
-          $this->variables[$name] = array($name, variable_get($name, $handler_form[$name]['#default_value']));
+          $this->variables[] = array($name, variable_get($name, $handler_form[$name]['#default_value']));
         }
       }
     }
@@ -41,8 +42,9 @@ class QuestionSettingsSource extends MigrateSource {
 
   public function fields() {
     return array(
-        'name'  => 'Variable name',
-        'value' => 'Varible value',
+        'bundle' => 'Question type (Bundle name)',
+        'name'   => 'Variable name',
+        'value'  => 'Varible value',
     );
   }
 
@@ -64,7 +66,12 @@ class QuestionSettingsSource extends MigrateSource {
     }
 
     $var = $this->variables[$this->item_number++];
-    return (object) array('name' => $var[0], 'value' => $var[1]);
+    return (object) array(
+          'migration' => 'quiz_question_type',
+          'bundle'    => $this->question_type,
+          'name'      => $var[0],
+          'value'     => $var[1]
+    );
   }
 
 }

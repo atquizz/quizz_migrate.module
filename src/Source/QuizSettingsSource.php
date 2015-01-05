@@ -29,8 +29,9 @@ class QuizSettingsSource extends MigrateSource {
 
   public function fields() {
     return array(
-        'name'  => 'Variable name',
-        'value' => 'Varible value',
+        'bundle' => 'Quiz type (Bundle name)',
+        'name'   => 'Variable name',
+        'value'  => 'Varible value',
     );
   }
 
@@ -53,9 +54,10 @@ class QuizSettingsSource extends MigrateSource {
 
     $var = $this->variables[$this->item_number++];
     return (object) array(
-          'type'  => $this->quiz_type,
-          'name'  => $var[0],
-          'value' => $var[1]
+          'migration' => 'quiz_type',
+          'bundle'    => $this->quiz_type,
+          'name'      => $var[0],
+          'value'     => $var[1]
     );
   }
 

@@ -5,7 +5,7 @@ namespace Drupal\quizz_migrate\Destination;
 use MigrateDestination;
 use stdClass;
 
-class QuizSettingsDestination extends MigrateDestination {
+class QuestionSettingsDestination extends MigrateDestination {
 
   public function __toString() {
     return '';
@@ -35,7 +35,7 @@ class QuizSettingsDestination extends MigrateDestination {
   }
 
   public function import(stdClass $object, stdClass $row) {
-    quizz_type_load($object->bundle)
+    quizz_question_type_load($object->bundle)
       ->setConfig($object->name, $object->value)
       ->save()
     ;
