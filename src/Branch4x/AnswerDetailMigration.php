@@ -52,9 +52,9 @@ class AnswerDetailMigration extends Migration {
         case 'long_answer':
           $this->details_handler = new LongTextDetails($this->bundle, $this);
           break;
-//        case 'matching':
-//          $this->details_handler = new MatchingDetails($this->bundle, $this);
-//          break;
+        case 'matching':
+          $this->details_handler = new MatchingDetails($this->bundle, $this);
+          break;
         case 'truefalse':
           $this->details_handler = new TrueFalseDetails($this->bundle, $this);
           break;
