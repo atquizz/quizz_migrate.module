@@ -19,6 +19,7 @@ abstract class BaseDetails implements DetailsInterface {
 
   /** @var string */
   protected $source_table_name;
+  protected $source_base_columns = array('result_id', 'question_nid', 'question_vid');
 
   /** @var string[] */
   protected $source_columns = array();
@@ -54,8 +55,8 @@ abstract class BaseDetails implements DetailsInterface {
     $query->innerJoin('node', 'n', 'r.nid = n.nid');
     $query->condition('n.type', $this->bundle);
 
+    $query->fields('answer', $this->source_base_columns);
     $query->fields('details', $this->source_columns);
-    $query->fields('answer', array('result_id', 'question_nid', 'question_vid'));
     $query->addExpression(0, 'answer_id');
     $query->addField('n', 'type', 'question_type');
 
