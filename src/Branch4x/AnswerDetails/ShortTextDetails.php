@@ -15,4 +15,11 @@ class ShortTextDetails extends BaseDetails {
       'answer_feedback_format' => 'answer_feedback_format'
   );
 
+  public function setupMigrateFieldMapping() {
+    parent::setupMigrateFieldMapping();
+
+    $this->migration->removeFieldMapping('answer_feedback_format');
+    $this->migration->addFieldMapping('answer_feedback_format', 'answer_feedback_format')->defaultValue($filter = filter_default_format());
+  }
+
 }

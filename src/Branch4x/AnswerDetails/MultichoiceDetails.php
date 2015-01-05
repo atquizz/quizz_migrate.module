@@ -8,12 +8,17 @@ use SelectQuery;
 class MultichoiceDetails extends BaseDetails {
 
   protected $source_table_name = 'quiz_multichoice_user_answers';
-  protected $source_columns = array('choice_order');
-  protected $dest_table_name = 'quizz_long_answer';
+  protected $source_columns = array('id', 'choice_order');
+  protected $dest_table_name = 'quizz_multichoice_answer';
   protected $column_mapping = array(
       'choice_order' => 'choice_order',
       'user_answer'  => 'user_answer',
   );
+
+  public function setupMigrateFieldMapping() {
+    parent::setupMigrateFieldMapping();
+    $this->migration->addUnmigratedSources(array('id'));
+  }
 
   protected function doSetupMigrationSource(SelectQuery $query) {
     $query->addExpression(0, 'user_answer');
@@ -27,8 +32,8 @@ class MultichoiceDetails extends BaseDetails {
     $entity->user_answer = array();
 
     // Prepare choice_order
-    if (!empty($entity->choice_order)) {
-      $entity->choice_order = explode(',', $entity->choice_order);
+    if (!empty($row->choice_order)) {
+      $entity->choice_order = explode(',', $row->choice_order);
     }
 
     // Prepare user_answer
