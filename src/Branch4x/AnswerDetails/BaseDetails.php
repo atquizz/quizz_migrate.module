@@ -80,12 +80,15 @@ abstract class BaseDetails implements DetailsInterface {
   }
 
   public function setupMigrateFieldMapping() {
-    $m = $this->migration;
     foreach ($this->column_mapping as $source_column => $destination_column) {
-      $m->addFieldMapping($destination_column, $source_column);
+      $this->migration->addFieldMapping($destination_column, $source_column);
     }
-    $m->addFieldMapping('answer_id', 'answer_id');
-    $m->addUnmigratedSources(array('question_type', 'question_nid', 'question_vid'));
+
+    if (!isset($this->column_mapping['answer_id'])) {
+      $this->migration->addFieldMapping('answer_id', 'answer_id');
+    }
+
+    $this->migration->addUnmigratedSources(array('question_type', 'question_nid', 'question_vid'));
   }
 
   public function setupMigrateMap() {

@@ -64,11 +64,11 @@ class AnswerDetailMigration extends Migration {
         case 'multichoice':
           $this->details_handler = new MultichoiceDetails($this->bundle, $this);
           break;
-//        case 'scale':
-//          $this->details_handler = new ScaleDetails($this->bundle, $this);
-//          $this->dependencies[] = 'quiz_scale_collection';
-//          $this->dependencies[] = 'quiz_scale_collection_item';
-//          break;
+        case 'scale':
+          $this->details_handler = new ScaleDetails($this->bundle, $this);
+          $this->dependencies[] = 'quiz_scale_collection';
+          $this->dependencies[] = 'quiz_scale_collection_item';
+          break;
         case 'pool':
         case 'quiz_directions':
         default:
