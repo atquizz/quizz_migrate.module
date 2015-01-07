@@ -20,6 +20,8 @@ class QuizSettingsSource extends MigrateSource {
         array('quiz_remove_partial_quiz_record', 604800), // 7 days
         array('quiz_pager_start', 100),
         array('quiz_pager_siblings', 5),
+        array('quiz_has_timer', 0),
+        array('quiz_durod', 0),
     );
 
     foreach ($this->variables as $k => $v) {
